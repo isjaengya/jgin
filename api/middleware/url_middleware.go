@@ -23,7 +23,7 @@ func RequestUrlMiddleware() gin.HandlerFunc {
 		sign := c.GetHeader("sign")
 		sv := c.GetHeader("sv")
 
-		if sign == "kWzyW23DOnMpGXz9Iqj2fWkaenYz0Qw7JiJrLqA5gZ2DnVGlhSWfoOvZqsa6opoc2m3DwJmfWhuwQRDQLTVY0QHCKR9JoycLljBH" {c.Next()}
+		if sign == "kWzyW23DOnMpGXz9Iqj2fWkaenYz0Qw7JiJrLqA5gZ2DnVGlhSWfoOvZqsa6opoc2m3DwJmfWhuwQRDQLTVY0QHCKR9JoycLljBH" {c.Next(); return}
 
 		if ts != "" && sign != "" && sv != "" {
 			sv, err := strconv.Atoi(sv)
@@ -53,4 +53,3 @@ func RequestUrlMiddleware() gin.HandlerFunc {
 		}
 	}
 }
-

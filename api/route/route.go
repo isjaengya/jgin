@@ -9,11 +9,10 @@ import (
 func InitRoute() *gin.Engine {
 	r := gin.Default()
 
-	v1_r := r.Group("/v1")
-	v1_r.Use(middleware.RequestUrlMiddleware())
-	v1_r.POST("/ping", handler.TestPost)
-	v1_r.POST("/family", handler.FamilyPost)
+	v1R := r.Group("/v1")
+	v1R.Use(middleware.RequestUrlMiddleware())
+	v1R.POST("/ping", middleware.Decorator(handler.TestPost, middleware.VerifyUid))
+	v1R.POST("/family", handler.FamilyPost)
 
-	//r.Run() // listen and serve on 0.0.0.0:8080
 	return r
 }
