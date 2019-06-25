@@ -2,6 +2,7 @@ package util
 
 import (
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -21,4 +22,8 @@ func CountVerify(i int32) (b bool){
 	} else {
 		return false
 	}
+}
+
+func SplitUid(uids string) (uid []string) {
+	return strings.Split(uids, ",")[:10]
 }

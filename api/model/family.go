@@ -23,7 +23,6 @@ func (family Family) FindByFamilyCode (code string) (b bool, err error) {
 	mysqldb := Db.GetMysqlClient()
 	rows, err := mysqldb.Query("select count(*) from family where invitation_code = ?", code)
 	if err != nil{
-		fmt.Println(err.Error(), "6666666666666666666")
 		return true, err
 	}
 	defer rows.Close()
@@ -37,15 +36,12 @@ func (family Family) FindByFamilyName () (b bool, err error) {
 	mysqldb := Db.GetMysqlClient()
 	rows, err := mysqldb.Query("select count(*) from family where family_name = ?", family.FamilyName)
 	if err != nil{
-		fmt.Println(err.Error(), "333333333333333333")
 		return true, err
 	}
 	defer rows.Close()
 
 	var i int32
 	if rows.Next() {rows.Scan(&i)}
-	fmt.Println(i, "44444444444444444444")
-	//return rows.Next(), nil
 	return util.CountVerify(i), nil
 }
 

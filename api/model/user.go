@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/francoispqt/gojay"
 	"log"
@@ -52,20 +53,33 @@ func (u *User) NKeys() int {
     return 4
 }
 
-func GetRedisInfoToUser(uid string) (u *User) {
+func GetCacheInfoToUser(uid string) (u *User, err error) {
 	user := &User{}
 	redisClient := service.GetRedisClient()
 	key := lib.UserRedisKey + uid
 	s, err := redisClient.Get(key).Result()
 	if err != nil {
-		fmt.Println(err.Error())
+		// 没有在redis中查询到数据, 扫db, 重新缓存
+		fmt.Println(err.Error(), "not find data")
+		user, err = FindUserByUid(uid)
+		if err == nil {
+			// 查询到
+			go user.UpdateRedisCache()
+			return user, err
+		} else {
+			// 没查到
+			s := "没有查询到该用户, " + uid
+			return user, errors.New(s)
+		}
+
 	}
 	fmt.Println("s", s)
 	err = gojay.UnmarshalJSONObject([]byte(s), user)
+	//err = json.Unmarshal([]byte(s), user)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	return user
+	return user, err
 }
 
 func (u *User) SetUserJwtLast10(jwt string) {
@@ -100,8 +114,8 @@ func VerifyUserLogin(schema Schema.UserLoginSchema) (user User, b bool) {
 	id := schema.Id
 	uid := schema.Uid
 
-	mysqldb := service.GetMysqlClient()
-	err := mysqldb.QueryRow("select * from user where id = ? and uid = ?", id, uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId)
+	mysqlClient := service.GetMysqlClient()
+	err := mysqlClient.QueryRow("select * from user where id = ? and uid = ?", id, uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId)
 	if err != nil{
 		fmt.Println(err.Error(), "没有查询到user")
 		return user, false
@@ -109,4 +123,29 @@ func VerifyUserLogin(schema Schema.UserLoginSchema) (user User, b bool) {
 		fmt.Println("查询到user", user)
 		return user, true
 	}
+}
+
+func FindUserByUid(uid string) (u *User, err error) {
+	user := &User{}
+	mysqlClient := service.GetMysqlClient()
+
+	err = mysqlClient.QueryRow("select * from user where uid = ?", uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId)
+	if err != nil{
+		fmt.Println(err.Error(), "没有查询到user")
+		return user, err
+	} else {
+		fmt.Println("查询到user", user)
+		return user, err
+	}
+}
+
+func GetUserJwtLast10(uid string) (s string) {
+	redisClient := service.GetRedisClient()
+	key := lib.UserJwtRedisKey + uid
+	s, err := redisClient.Get(key).Result()
+	if err != nil {
+		fmt.Println("set user jwt last 10 error, ", err.Error())
+		return ""
+	}
+	return s
 }
