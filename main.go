@@ -8,8 +8,6 @@ import (
 func main() {
 	Service.RedisInit()
 	Service.MysqlInit()
-	defer Service.Mysqldb.Close()
-	defer Service.DefaultRedis.Close()
 
 	route := route2.InitRoute()
 	route.Run(":8000")

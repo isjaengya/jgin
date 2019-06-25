@@ -20,7 +20,8 @@ type Family struct {
 }
 
 func (family Family) FindByFamilyCode (code string) (b bool, err error) {
-	rows, err := Db.Mysqldb.Query("select count(*) from family where invitation_code = ?", code)
+	mysqldb := Db.GetMysqlClient()
+	rows, err := mysqldb.Query("select count(*) from family where invitation_code = ?", code)
 	if err != nil{
 		fmt.Println(err.Error(), "6666666666666666666")
 		return true, err
@@ -33,7 +34,8 @@ func (family Family) FindByFamilyCode (code string) (b bool, err error) {
 }
 
 func (family Family) FindByFamilyName () (b bool, err error) {
-	rows, err := Db.Mysqldb.Query("select count(*) from family where family_name = ?", family.FamilyName)
+	mysqldb := Db.GetMysqlClient()
+	rows, err := mysqldb.Query("select count(*) from family where family_name = ?", family.FamilyName)
 	if err != nil{
 		fmt.Println(err.Error(), "333333333333333333")
 		return true, err
@@ -67,7 +69,8 @@ func (family Family) ChildAdd (tx *sql.Tx) (childId int64) {
 }
 
 func (family Family) FamilyAdd () (err error) {
-	tx, err := Db.Mysqldb.Begin()
+	mysqldb := Db.GetMysqlClient()
+	tx, err := mysqldb.Begin()
 	if err != nil {
 		fmt.Println(err.Error())
 		return

@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-var DefaultRedis *redis.Client
+var defaultRedis *redis.Client
 
 var RedisPool map[string]*redis.Client
 
@@ -57,7 +57,11 @@ func RedisInit() {
 	}
 	cli, ok := RedisPool["default"]
 	if ok {
-		DefaultRedis = cli
+		defaultRedis = cli
 	} else {
 	}
+}
+
+func GetRedisClient() *redis.Client {
+	return defaultRedis
 }

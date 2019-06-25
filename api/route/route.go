@@ -14,5 +14,9 @@ func InitRoute() *gin.Engine {
 	v1R.POST("/ping", middleware.Decorator(handler.TestPost, middleware.VerifyUid))
 	v1R.POST("/family", handler.FamilyPost)
 
+	v1R.POST("/user/login", handler.UserLogin)
+	v1R.GET("/user", middleware.Decorator(handler.UserInfo, middleware.VerifyUid))
+	v1R.GET("/inner/user", handler.UserInfo)
+
 	return r
 }

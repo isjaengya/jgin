@@ -21,6 +21,7 @@ var msgFlags = map[int]string{
 	FAMILY_EXIST: "家庭已存在",
 	CODE_EXIST: "邀请码生成重复，请重试",
 	JWT_PARSE_ERROE: "JWT字符串解析失败",
+	PARAM_ERROR: "参数不足",
 	}
 
 // GetMessage 通过code获取message

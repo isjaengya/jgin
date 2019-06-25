@@ -9,6 +9,12 @@
 			"revisionTime": "2019-06-20T18:01:02Z"
 		},
 		{
+			"checksumSHA1": "Q79M93qtThDyWX7zvKzfXWvI2bA=",
+			"path": "github.com/francoispqt/gojay",
+			"revision": "1398296d938f9fae26750ddc2fe356b6d897f799",
+			"revisionTime": "2019-06-11T06:42:31Z"
+		},
+		{
 			"checksumSHA1": "90S9sFqcIo/uuwQzz1t/wYs7GEs=",
 			"path": "github.com/gin-gonic/gin",
 			"revision": "b869fe1415e4b9eb52f247441830d502aece2d4d",

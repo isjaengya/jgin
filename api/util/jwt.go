@@ -7,10 +7,12 @@ package util
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-    time2 "time"
+	"tebu_go/api/lib"
+	time2 "time"
 )
 
-func CreateJwt(key string, m map[string] interface{}) string {
+func CreateJwt(m map[string] interface{}) string {
+	key := lib.JwtKey
 	NanoTime := time2.Now().UnixNano()
 	m["exp"] = NanoTime
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -25,7 +27,8 @@ func CreateJwt(key string, m map[string] interface{}) string {
 
 }
 
-func parseToken(tokenString string, key string) (jwt.MapClaims, bool){
+func parseToken(tokenString string) (jwt.MapClaims, bool){
+	key := lib.JwtKey
     token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
         if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
             return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -42,8 +45,8 @@ func parseToken(tokenString string, key string) (jwt.MapClaims, bool){
     }
 }
 
-func ParseTokenUid(tokenString string, key string) (uid string, b bool){
-	claims, ok := parseToken(tokenString, key)
+func ParseTokenUid(tokenString string) (uid string, b bool){
+	claims, ok := parseToken(tokenString)
 	if ok {
 		uid := claims["uid"].(string)
 		return uid, true

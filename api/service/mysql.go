@@ -2,34 +2,45 @@ package service
 
 import (
 	"database/sql"
-    _ "github.com/go-sql-driver/mysql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	tebuConfig "tebu_go/api/config"
 )
 
-var Mysqldb *sql.DB
+var mysqldb *sql.DB
 
 func MysqlInit(){
 
  	var err error
 	config := tebuConfig.LoadConfig()
+	mysqlUser := config.GetString("mysql.user")
+	mysqlPassword := config.GetString("mysql.password")
+	mysqlHost := config.GetString("mysql.host")
+	mysqlPort := config.GetString("mysql.port")
+	mysqlDatabase := config.GetString("mysql.database")
+
 	mysqlMaxOpenConns := config.GetInt("mysql.maxopenconns")
 	mysqlMaxIdleConns := config.GetInt("mysql.maxidleconns")
-	// user:password@/dbname
-    Mysqldb, err = sql.Open("mysql", "root:root@/yinyu_dev")
+	// user:password@(host:port)/dbname
+	mysqlS := fmt.Sprintf("%s:%s@(%s:%s)/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDatabase)
+    //Mysqldb, err = sql.Open("mysql", "root:root@/yinyu_dev")
+    mysqldb, err = sql.Open("mysql", mysqlS)
 
     if err != nil {
 		log.Fatalf("Open database error: %s\n", err)
 	}
 
+    mysqldb.SetMaxOpenConns(mysqlMaxOpenConns)
+    mysqldb.SetMaxIdleConns(mysqlMaxIdleConns)
 
-    Mysqldb.SetMaxOpenConns(mysqlMaxOpenConns)
-
-    Mysqldb.SetMaxIdleConns(mysqlMaxIdleConns)
-
-    err = Mysqldb.Ping()
+    err = mysqldb.Ping()
     if err != nil {
 		log.Fatal(err)
 	}
 
+}
+
+func GetMysqlClient() *sql.DB {
+	return mysqldb
 }
