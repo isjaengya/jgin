@@ -8,8 +8,8 @@ import (
 
 func InitRoute() *gin.Engine {
 	r := gin.Default()
-
 	v1R := r.Group("/v1")
+
 	v1R.Use(middleware.RequestUrlMiddleware())
 	v1R.POST("/ping", middleware.Decorator(handler.TestPost, middleware.VerifyUid))
 	v1R.POST("/family", handler.FamilyPost)

@@ -181,6 +181,12 @@
 		{
 			"path": "google.golang.org/appengine/cloudsql",
 			"revision": ""
+		},
+		{
+			"checksumSHA1": "nHrH0M3NlSK6Za21UiT+/0qdEss=",
+			"path": "tebu_go",
+			"revision": "fbd3be6e6b1e35651dd8f6c0e91af3de83f5a549",
+			"revisionTime": "2019-06-25T10:36:08Z"
 		}
 	],
 	"rootPath": "tebu_go"

@@ -1,7 +1,7 @@
 redis:
   dialtimeout: 500000000
-  readtimeout: 30000000
-  writetimeout: 30000000
+  readtimeout: 60000000
+  writetimeout: 60000000
   poolsize: 30
   minIdleConns: 10
   address:
