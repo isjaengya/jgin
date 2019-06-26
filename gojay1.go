@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/francoispqt/gojay"
-	"log"
-	"reflect"
+	"math/rand"
 	"time"
 )
 
@@ -49,26 +48,26 @@ func (u *user) NKeys() int {
 //	fmt.Println(b.String())
 //}
 
-func main() {
-	t1 := time.Now().UnixNano()
-	for i := 0; i < 100; i++ {
-		u := &user{1, "gojay", "gojay@email.com"}
-		//b := strings.Builder{}                       // 不推荐这种方式，效率没有下面高
-		//enc := gojay.NewEncoder(&b)
-		//if err := enc.Encode(u); err != nil {
-		//	log.Fatal(err)
-		//}
-		//fmt.Println(b.String())
-		b, err := gojay.MarshalJSONObject(u)
-		if err != nil {
-			log.Fatal(err)
-		}
-		//fmt.Println(string(b))
-		fmt.Println(reflect.TypeOf(string(b)))
-	}
-	t2 := time.Now().UnixNano()
-	fmt.Println(t2 - t1)
-}
+//func main() {
+//	t1 := time.Now().UnixNano()
+//	for i := 0; i < 100; i++ {
+//		u := &user{1, "gojay", "gojay@email.com"}
+//		//b := strings.Builder{}                       // 不推荐这种方式，效率没有下面高
+//		//enc := gojay.NewEncoder(&b)
+//		//if err := enc.Encode(u); err != nil {
+//		//	log.Fatal(err)
+//		//}
+//		//fmt.Println(b.String())
+//		b, err := gojay.MarshalJSONObject(u)
+//		if err != nil {
+//			log.Fatal(err)
+//		}
+//		//fmt.Println(string(b))
+//		fmt.Println(reflect.TypeOf(string(b)))
+//	}
+//	t2 := time.Now().UnixNano()
+//	fmt.Println(t2 - t1)
+//}
 
 //func main() {
 //	t1 := time.Now().UnixNano()
@@ -85,22 +84,38 @@ func main() {
 //	fmt.Println(t2 - t1)
 //}
 
-func main() {
-	t1 := time.Now().UnixNano()
-	s := []byte(`{"id":1,"name":"gojay","email":"gojay@email.com"}`)
-	for i := 0; i < 1000; i++ {
-		u := &user{}
+//func main() {
+//	t1 := time.Now().UnixNano()
+//	s := []byte(`{"id":1,"name":"gojay","email":"gojay@email.com"}`)
+//	for i := 0; i < 1000; i++ {
+//		u := &user{}
+//
+//		//if err := json.Unmarshal(s, &u); err != nil {
+//		//	log.Fatalf("Json unmarshaling failed:%s", err)
+//		//}
+//		//fmt.Println(u)
+//		err := gojay.UnmarshalJSONObject(s, u)
+//		if err != nil {
+//			log.Fatal(err)
+//		}
+//		fmt.Println(reflect.TypeOf(u))
+//	}
+//	t2 := time.Now().UnixNano()
+//	fmt.Println(t2 - t1)
+//}
 
-		//if err := json.Unmarshal(s, &u); err != nil {
-		//	log.Fatalf("Json unmarshaling failed:%s", err)
-		//}
-		//fmt.Println(u)
-		err := gojay.UnmarshalJSONObject(s, u)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(reflect.TypeOf(u))
-	}
-	t2 := time.Now().UnixNano()
-	fmt.Println(t2 - t1)
+
+func RandString(len int) string {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+    bytes := make([]byte, len)
+    for i := 0; i < len; i++ {
+        b := r.Intn(26) + 65
+        bytes[i] = byte(b)
+    }
+    return string(bytes)
+}
+
+func main()  {
+	s := RandString(1)
+	fmt.Println(s)
 }

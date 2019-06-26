@@ -24,6 +24,6 @@ func CountVerify(i int32) (b bool){
 	}
 }
 
-func SplitUid(uids string) (uid []string) {
-	return strings.Split(uids, ",")[:10]
+func SplitUid(uidS string) (uid []string) {
+	return strings.Split(uidS, ",")[:10]
 }

@@ -23,6 +23,24 @@
 			"versionExact": "v1.3.0"
 		},
 		{
+			"checksumSHA1": "b4DmyMT9bicTRVJw1hJXHLhIH+0=",
+			"path": "github.com/go-playground/locales",
+			"revision": "630ebbb602847eba93e75ae38bbc7bb7abcf1ff3",
+			"revisionTime": "2019-04-30T15:33:29Z"
+		},
+		{
+			"checksumSHA1": "JgF260rC9YpWyY5WEljjimWLUXs=",
+			"path": "github.com/go-playground/locales/currency",
+			"revision": "630ebbb602847eba93e75ae38bbc7bb7abcf1ff3",
+			"revisionTime": "2019-04-30T15:33:29Z"
+		},
+		{
+			"checksumSHA1": "7QcjNTtW0Rc/5BPw1MPaQ6YNjso=",
+			"path": "github.com/go-playground/universal-translator",
+			"revision": "71201497bace774495daed26a3874fd339e0b538",
+			"revisionTime": "2017-03-27T19:17:03Z"
+		},
+		{
 			"checksumSHA1": "DMkluxyFZkI5DutasFDUb7Hc+I0=",
 			"path": "github.com/go-redis/redis",
 			"revision": "7a300ac6eb412da27e5de3e2c4c430d4e3a2ba6f",
@@ -147,6 +165,12 @@
 			"revisionTime": "2019-04-26T15:48:59Z"
 		},
 		{
+			"checksumSHA1": "O5KNHAjNKSO1Wh5/4JSnp/KXu9U=",
+			"path": "github.com/leodido/go-urn",
+			"revision": "a67a23e1c1af3c66528573bb86a87246477277c1",
+			"revisionTime": "2018-12-04T09:21:09Z"
+		},
+		{
 			"checksumSHA1": "2d0rR/VhqllUdrcH6kwHHrhqJ2E=",
 			"path": "github.com/spf13/afero",
 			"revision": "588a75ec4f32903aa5e39a2619ba6a4631e28424",
@@ -181,6 +205,12 @@
 		{
 			"path": "google.golang.org/appengine/cloudsql",
 			"revision": ""
+		},
+		{
+			"checksumSHA1": "kxY0VihKt450ZU5/NlNUO6UifD4=",
+			"path": "gopkg.in/go-playground/validator.v9",
+			"revision": "884d31b8cad6a1ec877f2400d555924cea03bbea",
+			"revisionTime": "2019-05-23T14:57:40Z"
 		},
 		{
 			"checksumSHA1": "nHrH0M3NlSK6Za21UiT+/0qdEss=",
