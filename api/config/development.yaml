@@ -6,7 +6,6 @@ redis:
   minIdleConns: 10
   address:
     default:
-#      r-2ze7f1da1fd5deb4.redis.rds.aliyuncs.com:6379/1 gtA4BWZ8rWN8SpZkfWZR
       127.0.0.1:6379/1
 mysql:
   user: "root"

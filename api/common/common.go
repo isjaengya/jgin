@@ -40,7 +40,6 @@ func GetValidatorError(err error) error {
 	if err == nil{
 		return nil
 	}
-	fmt.Println(err.Error())
 	errs := err.(validator.ValidationErrors)
 
 	for _, _e := range errs {
@@ -52,7 +51,7 @@ func GetValidatorError(err error) error {
 		//s := fmt.Sprintf("输入:%s, 错误原因:%s", inputValue, errMsg)
 
 		s := fmt.Sprintf("字段名称:%s, 错误原因:%s", valueStruct, errMsg)
-		//fmt.Println(_e.ActualTag())
+		//fmt.Println(_e.ActualTag())  // 这里可以手动放开试一试，对应的是序列化失败中的各种信息
 		//fmt.Println(_e.Value())
 		//fmt.Println(_e.Type())
 		//fmt.Println(_e.Tag())
