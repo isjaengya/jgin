@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"tebu_go/api/lib"
+	"tebu_go/api/service"
 	time2 "time"
 )
 
@@ -53,4 +54,15 @@ func ParseTokenUid(tokenString string) (uid string, b bool){
 	} else {
 		return "", false
 	}
+}
+
+func GetUserJwtLast10(uid string) (s string) {
+	redisClient := service.GetRedisClient()
+	key := lib.UserJwtRedisKey + uid
+	s, err := redisClient.Get(key).Result()
+	if err != nil {
+		fmt.Println("set user jwt last 10 error, ", err.Error())
+		return ""
+	}
+	return s
 }

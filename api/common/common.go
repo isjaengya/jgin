@@ -1,6 +1,8 @@
 package common
 
 import (
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
@@ -9,6 +11,7 @@ import (
 )
 
 func SetError(c *gin.Context, code int, err error) {
+	err = GetValidatorError(err)
 	obj := gin.H{}
 	if err == nil{
 		obj["message"] = e.GetMessage(code)
@@ -29,17 +32,36 @@ func SetOK(c *gin.Context, obj interface{}) {
 	return
 }
 
-type CommonError struct {
+type ValidateError struct {
 	Errors map[string]interface{} `json:"errors"`
 }
 
-func SetValidatorError(err error) CommonError {
-	res := CommonError{}
-	res.Errors = make(map[string]interface{})
+func GetValidatorError(err error) error {
+	if err == nil{
+		return nil
+	}
+	fmt.Println(err.Error())
 	errs := err.(validator.ValidationErrors)
 
-	for _, e := range errs {
-		res.Errors[e.Field()] = e.ActualTag()
+	for _, _e := range errs {
+		tag := _e.Tag()
+		errMsg := e.GetValidateMessage(tag)
+		valueStruct := _e.StructField()
+
+		//inputValue := _e.Value() 这里获取的类型不确定，所以没办法直接返回
+		//s := fmt.Sprintf("输入:%s, 错误原因:%s", inputValue, errMsg)
+
+		s := fmt.Sprintf("字段名称:%s, 错误原因:%s", valueStruct, errMsg)
+		//fmt.Println(_e.ActualTag())
+		//fmt.Println(_e.Value())
+		//fmt.Println(_e.Type())
+		//fmt.Println(_e.Tag())
+		//fmt.Println(_e.StructNamespace())
+		//fmt.Println(_e.StructField())
+		//fmt.Println(_e.Namespace())
+		//fmt.Println(_e.Kind())
+		//fmt.Println(_e.Param())
+		return errors.New(s)
 	}
-	return res
+	return err
 }

@@ -1,24 +1,23 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"strings"
 	"tebu_go/api/common"
 	"tebu_go/api/lib/e"
 	"tebu_go/api/middleware"
-	"tebu_go/api/model"
 	"tebu_go/api/schema"
 	"tebu_go/api/util"
 )
 
 func UserLogin(c *gin.Context) {
-	var userLoginSchema schema.UserLoginSchema
-	if err := c.ShouldBind(&userLoginSchema); err != nil {
-		common.SetError(c, e.PARAM_ERROR, err)
+	v := schema.UserLoginSchema{}
+	if err := v.Bind(c); err != nil {
+		common.SetError(c, e.SHOULD_ERROR, err)
 		return
 	}
 
-	user, b := model.VerifyUserLogin(userLoginSchema)
+	user, b := schema.VerifyUserLogin(v)
 	if b != true {
 		common.SetError(c, e.PASSWORD_OR_USERNAME_ERROR, nil)
 		return
@@ -33,33 +32,22 @@ func UserLogin(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	uidS := c.Query("uid")
-	if uidS == "" {
-		common.SetError(c, e.DATA_ERROE, nil)
+	uid := middleware.GetUid(c)
+	fmt.Println("当前用户uid为 --> ", uid)
+	v := schema.UserQuerySchema{}
+	if err := v.Bind(c); err != nil {
+		common.SetError(c, e.SHOULD_ERROR, err)
 		return
 	}
-	i := strings.Index(uidS, ",")
-	if i == -1 {
-		user, err := model.GetCacheInfoToUser(uidS)
-		if err != nil{
-			common.SetError(c, e.DATA_ERROE, err)
-			return
+	m := make(map[string]interface{})
+	for _, uid := range v.Uids{
+		user, err := schema.GetCacheInfoToUser(uid)
+		if err == nil {
+			m[uid] = user
 		}
-		common.SetOK(c, user)
-		return
-	} else {
-		// 传递多个uid
-		m := make(map[string]interface{})
-		uidL := util.SplitUid(uidS)
-		for _, uid := range uidL{
-			user, err := model.GetCacheInfoToUser(uid)
-			if err == nil {
-				m[uid] = user
-			}
-		}
-		common.SetOK(c, m)
-		return
 	}
+	common.SetOK(c, m)
+	return
 }
 
 func CheckUserJwt(c *gin.Context) {
@@ -69,7 +57,7 @@ func CheckUserJwt(c *gin.Context) {
 	uid, ok := util.ParseTokenUid(jwt)
 	if ok {
 		if strict == "strict" {
-			s := model.GetUserJwtLast10(uid)
+			s := util.GetUserJwtLast10(uid)
 			if jwt[len(jwt)-10:] != s{
 				common.SetError(c, e.JWT_INVALID, nil)
 				return

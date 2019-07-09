@@ -27,6 +27,21 @@ var msgFlags = map[int]string{
 	DATA_ERROE: "数据出错",
 	}
 
+var validateMsg = map[string]string{
+	"required": "字段是必须的",
+	"max": "最大值或长度超出",
+	"min": "最小值或长度超出",
+	"family_name-uniq": "家庭名字重复",
+}
+
+func GetValidateMessage(s string) string {
+	msg, ok := validateMsg[s]
+	if ok {
+		return msg
+	}
+	return ""
+}
+
 // GetMessage 通过code获取message
 func GetMessage(code int) string {
 	msg, ok := msgFlags[code]

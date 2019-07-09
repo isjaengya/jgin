@@ -11,7 +11,7 @@ func main() {
 
 	userInfo := make(UserInfo)
 
-	userInfo["uid"] = "144494"
+	userInfo["uid"] = "111111"
 
   tokenString1 := util.CreateJwt(userInfo)
   uid, ok := util.ParseTokenUid(tokenString1)

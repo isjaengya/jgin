@@ -11,12 +11,12 @@ func InitRoute() *gin.Engine {
 	v1R := r.Group("/v1")
 
 	v1R.Use(middleware.RequestUrlMiddleware())
-	v1R.POST("/ping", middleware.Decorator(handler.TestPost, middleware.VerifyUid))
+	v1R.POST("/ping", handler.TestPost)
 	v1R.POST("/family", handler.FamilyPost)
 
 	v1R.POST("/user/login", handler.UserLogin)
-	v1R.GET("/user", handler.UserInfo)
-	//v1R.GET("/user", middleware.Decorator(handler.UserInfo, middleware.VerifyUid))
+	//v1R.GET("/user", handler.UserInfo)
+	v1R.GET("/user", middleware.Decorator(handler.UserInfo, middleware.VerifyUid))
 	//v1R.GET("/inner/user", handler.UserInfo)
 
 	v1R.GET("/user/jwt", handler.CheckUserJwt)

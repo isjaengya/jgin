@@ -2,8 +2,8 @@ package common
 
 import (
 	"reflect"
-	"strings"
 	"sync"
+	"tebu_go/api/schema"
 
 	"github.com/gin-gonic/gin/binding"
 	"gopkg.in/go-playground/validator.v9"
@@ -39,28 +39,28 @@ func (v *defaultValidator) lazyInit() {
 	v.once.Do(func() {
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
-
+		_ = v.validate.RegisterValidation("family_name-uniq", schema.ValidateUniqFamilyName)
 		// add any custom validations etc. here
 	})
 }
 
-func (v *defaultValidator) lazyinit() {
-	v.once.Do(func() {
-		v.validate = validator.New()
-		v.validate.SetTagName("binding")
-		v.validate.RegisterValidation("is-uniq", ValidateUniq)
-		v.validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
-			name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
-
-			if name == "-" {
-				return ""
-			}
-
-			return name
-		})
-		//add any custom validations etc. here
-	})
-}
+//func (v *defaultValidator) lazyinit() {
+//	v.once.Do(func() {
+//		v.validate = validator.New()
+//		v.validate.SetTagName("binding")
+//		//v.validate.RegisterValidation("is-uniq", ValidateUniq)
+//		v.validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+//			name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+//
+//			if name == "-" {
+//				return ""
+//			}
+//
+//			return name
+//		})
+//		//add any custom validations etc. here
+//	})
+//}
 
 func kindOfData(data interface{}) reflect.Kind {
 

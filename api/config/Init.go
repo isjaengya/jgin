@@ -6,10 +6,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-var conf *viper.Viper = nil
+var Conf *viper.Viper = nil
 
 func LoadConfig() *viper.Viper {
-	if conf == nil {
+	if Conf == nil {
 		MODE := os.Getenv("MODE")
 		v := viper.New()
 		v.AddConfigPath("./api/config/")
@@ -23,7 +23,11 @@ func LoadConfig() *viper.Viper {
 			fmt.Println(err)
 			return nil
 		}
-		conf = v
+		Conf = v
 	}
-	return conf
+	return Conf
+}
+
+func Init() {
+	LoadConfig()
 }

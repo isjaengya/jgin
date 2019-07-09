@@ -8,7 +8,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	tebuConfig "tebu_go/api/config"
+	Config "tebu_go/api/config"
 	"time"
 )
 
@@ -18,7 +18,7 @@ var RedisPool map[string]*redis.Client
 
 func RedisInit() {
 	RedisPool = make(map[string]*redis.Client)
-	config := tebuConfig.LoadConfig()
+	config := Config.Conf
 	Map := config.GetStringMapString("redis.address")
 	for key, value := range Map {
 		confs := strings.Split(value, " ")

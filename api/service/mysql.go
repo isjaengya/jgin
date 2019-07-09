@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	tebuConfig "tebu_go/api/config"
+	Config "tebu_go/api/config"
 )
 
 var mysqldb *sql.DB
@@ -13,7 +13,7 @@ var mysqldb *sql.DB
 func MysqlInit(){
 
  	var err error
-	config := tebuConfig.LoadConfig()
+	config := Config.Conf
 	mysqlUser := config.GetString("mysql.user")
 	mysqlPassword := config.GetString("mysql.password")
 	mysqlHost := config.GetString("mysql.host")
