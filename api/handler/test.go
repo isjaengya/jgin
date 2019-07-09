@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"tebu_go/api/common"
-	"tebu_go/api/lib/e"
-	"tebu_go/api/schema"
+	"jgin/api/common"
+	"jgin/api/lib/e"
+	"jgin/api/schema"
 )
 
 func TestPost(c *gin.Context) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	Config "tebu_go/api/config"
+	Config "jgin/api/config"
 )
 
 var mysqldb *sql.DB

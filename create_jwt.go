@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"tebu_go/api/util"
+	"jgin/api/util"
 )
 
 func main() {

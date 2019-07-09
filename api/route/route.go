@@ -2,8 +2,8 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	"tebu_go/api/handler"
-	"tebu_go/api/middleware"
+	"jgin/api/handler"
+	"jgin/api/middleware"
 )
 
 func InitRoute() *gin.Engine {

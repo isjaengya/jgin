@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
-	"tebu_go/api/lib/e"
+	"jgin/api/lib/e"
 	"time"
 )
 

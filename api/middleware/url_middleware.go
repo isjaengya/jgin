@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"strings"
-	"tebu_go/api/common"
-	"tebu_go/api/lib"
-	"tebu_go/api/lib/e"
+	"jgin/api/common"
+	"jgin/api/lib"
+	"jgin/api/lib/e"
 )
 
 func RequestUrlMiddleware() gin.HandlerFunc {

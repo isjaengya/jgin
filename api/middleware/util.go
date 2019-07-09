@@ -3,9 +3,9 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"tebu_go/api/common"
-	"tebu_go/api/lib/e"
-	"tebu_go/api/util"
+	"jgin/api/common"
+	"jgin/api/lib/e"
+	"jgin/api/util"
 )
 
 type GinHandlerDecorator func(gin.HandlerFunc) gin.HandlerFunc

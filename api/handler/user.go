@@ -3,11 +3,11 @@ package handler
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"tebu_go/api/common"
-	"tebu_go/api/lib/e"
-	"tebu_go/api/middleware"
-	"tebu_go/api/schema"
-	"tebu_go/api/util"
+	"jgin/api/common"
+	"jgin/api/lib/e"
+	"jgin/api/middleware"
+	"jgin/api/schema"
+	"jgin/api/util"
 )
 
 func UserLogin(c *gin.Context) {

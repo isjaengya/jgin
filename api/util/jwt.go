@@ -7,8 +7,8 @@ package util
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"tebu_go/api/lib"
-	"tebu_go/api/service"
+	"jgin/api/lib"
+	"jgin/api/service"
 	time2 "time"
 )
 

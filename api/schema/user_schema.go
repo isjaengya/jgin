@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"log"
-	"tebu_go/api/lib"
-	"tebu_go/api/service"
+	"jgin/api/lib"
+	"jgin/api/service"
 	"time"
 )
 

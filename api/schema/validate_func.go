@@ -3,7 +3,7 @@ package schema
 import (
 	"fmt"
 	"gopkg.in/go-playground/validator.v9"
-	Db "tebu_go/api/service"
+	Db "jgin/api/service"
 )
 
 func ValidateUniqFamilyName(fl validator.FieldLevel) bool {

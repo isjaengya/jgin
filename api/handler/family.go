@@ -2,10 +2,10 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"tebu_go/api/common"
-	"tebu_go/api/lib/e"
-	"tebu_go/api/schema"
-	"tebu_go/api/util"
+	"jgin/api/common"
+	"jgin/api/lib/e"
+	"jgin/api/schema"
+	"jgin/api/util"
 )
 
 func FamilyPost (c *gin.Context) {

@@ -8,7 +8,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	Config "tebu_go/api/config"
+	Config "jgin/api/config"
 	"time"
 )
 

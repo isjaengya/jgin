@@ -3,7 +3,7 @@ package common
 import (
 	"reflect"
 	"sync"
-	"tebu_go/api/schema"
+	"jgin/api/schema"
 
 	"github.com/gin-gonic/gin/binding"
 	"gopkg.in/go-playground/validator.v9"

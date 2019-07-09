@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	Db "tebu_go/api/service"
-	"tebu_go/api/util"
+	Db "jgin/api/service"
+	"jgin/api/util"
 )
 
 type FamilySchema struct {
