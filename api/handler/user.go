@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"jgin/api/common"
 	"jgin/api/lib/e"
@@ -31,9 +30,15 @@ func UserLogin(c *gin.Context) {
 	return
 }
 
-func UserInfo(c *gin.Context) {
+func UserLogout(c *gin.Context) {
 	uid := middleware.GetUid(c)
-	fmt.Println("当前用户uid为 --> ", uid)
+	go schema.DeleteUserJwtLast10(uid)
+	c.Header("Authorization", "")
+	common.SetOK(c, "ok")
+	return
+}
+
+func UserInfo(c *gin.Context) {
 	v := schema.UserQuerySchema{}
 	if err := v.Bind(c); err != nil {
 		common.SetError(c, e.SHOULD_ERROR, err)
@@ -51,17 +56,14 @@ func UserInfo(c *gin.Context) {
 }
 
 func CheckUserJwt(c *gin.Context) {
-	/*这里不采用装饰器的方式来验证jwt, 验证jwt的接口调用是最多的, 尽量减少里面的逻辑*/
-	strict := c.Query("mode") // 是不是严格模式的验证  --> 严格模式get一次redis，否则只验证有没有这个用户
+	//这里不采用装饰器的方式来验证jwt, 验证jwt的接口调用是最多的, 尽量减少里面的逻辑
 	jwt := c.GetHeader("Authorization")
 	uid, ok := util.ParseTokenUid(jwt)
 	if ok {
-		if strict == "strict" {
-			s := util.GetUserJwtLast10(uid)
-			if jwt[len(jwt)-10:] != s{
-				common.SetError(c, e.JWT_INVALID, nil)
-				return
-			}
+		s := util.GetUserJwtLast10(uid)
+		if jwt[len(jwt)-10:] != s{
+			common.SetError(c, e.JWT_INVALID, nil)
+			return
 		}
 		m := map[string]interface{} {"uid": uid}
 		common.SetOK(c, m)

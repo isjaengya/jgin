@@ -25,6 +25,11 @@ func VerifyUid(h gin.HandlerFunc) gin.HandlerFunc {
 
 		uid, ok := util.ParseTokenUid(jwt)
     	if ok {
+    		s := util.GetUserJwtLast10(uid)
+			if jwt[len(jwt)-10:] != s {
+				common.SetError(c, e.JWT_INVALID, nil)
+				return
+			}
     		c.Set("CurrentUid", uid)
 			h(c) // 重点！！ 执行初始函数，把这里注释掉就不往下执行了，上面的Decorator貌似没啥作用，fuck
 			return

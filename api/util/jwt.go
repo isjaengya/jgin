@@ -41,7 +41,6 @@ func parseToken(tokenString string) (jwt.MapClaims, bool){
     if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
         return claims, true
     } else {
-        fmt.Println(err)
         return map[string]interface{}{"nil": "nil"}, false
     }
 }

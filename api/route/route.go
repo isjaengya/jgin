@@ -15,9 +15,10 @@ func InitRoute() *gin.Engine {
 	v1R.POST("/family", handler.FamilyPost)
 
 	v1R.POST("/user/login", handler.UserLogin)
+	v1R.GET("/user/logout", middleware.Decorator(handler.UserLogout, middleware.VerifyUid))
 	//v1R.GET("/user", handler.UserInfo)
 	v1R.GET("/user", middleware.Decorator(handler.UserInfo, middleware.VerifyUid))
-	//v1R.GET("/inner/user", handler.UserInfo)
+	v1R.GET("/inner/user", handler.UserInfo)
 
 	v1R.GET("/user/jwt", handler.CheckUserJwt)
 
