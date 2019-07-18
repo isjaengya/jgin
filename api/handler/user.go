@@ -5,8 +5,9 @@ import (
 	"jgin/api/common"
 	"jgin/api/lib/e"
 	"jgin/api/middleware"
+	"jgin/api/model"
 	"jgin/api/schema"
-	"jgin/api/util"
+	"jgin/tasks"
 )
 
 func UserLogin(c *gin.Context) {
@@ -16,7 +17,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	user, b := schema.VerifyUserLogin(v)
+	user, b := model.VerifyUserLogin(v)
 	if b != true {
 		common.SetError(c, e.PASSWORD_OR_USERNAME_ERROR, nil)
 		return
@@ -24,15 +25,15 @@ func UserLogin(c *gin.Context) {
 	jwtLast10 := middleware.GinGetJwt(c, user.Uid)
 
 	go user.SetUserJwtLast10(jwtLast10)
-	// user --> json 更新redis user cache
-	go user.UpdateRedisCache()
+	go tasks.AsyncHelloWorld(user.CreateAt)
+
 	common.SetOK(c, user)
 	return
 }
 
 func UserLogout(c *gin.Context) {
 	uid := middleware.GetUid(c)
-	go schema.DeleteUserJwtLast10(uid)
+	go model.DeleteUserJwtLast10(uid)
 	c.Header("Authorization", "")
 	common.SetOK(c, "ok")
 	return
@@ -45,8 +46,8 @@ func UserInfo(c *gin.Context) {
 		return
 	}
 	m := make(map[string]interface{})
-	for _, uid := range v.Uids{
-		user, err := schema.GetCacheInfoToUser(uid)
+	for _, uid := range v.Uids {
+		user, err := model.GetCacheInfoToUser(uid)
 		if err == nil {
 			m[uid] = user
 		}
@@ -56,20 +57,8 @@ func UserInfo(c *gin.Context) {
 }
 
 func CheckUserJwt(c *gin.Context) {
-	//这里不采用装饰器的方式来验证jwt, 验证jwt的接口调用是最多的, 尽量减少里面的逻辑
-	jwt := c.GetHeader("Authorization")
-	uid, ok := util.ParseTokenUid(jwt)
-	if ok {
-		s := util.GetUserJwtLast10(uid)
-		if jwt[len(jwt)-10:] != s{
-			common.SetError(c, e.JWT_INVALID, nil)
-			return
-		}
-		m := map[string]interface{} {"uid": uid}
-		common.SetOK(c, m)
-		return
-	} else {
-		common.SetError(c, e.JWT_PARSE_ERROE, nil)
-		return
-	}
+	uid := middleware.GetUid(c)
+	m := map[string]interface{}{"uid": uid}
+	common.SetOK(c, m)
+	return
 }

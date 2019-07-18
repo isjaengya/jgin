@@ -1,5 +1,46 @@
 ### 封装gin框架, 更符合一个pythoner的开发习惯
 
+#### 启动测试
+go run main.go 启动gin框架
+go run machinery_master.go 启动machinery任务队列
+go run machinery_sender.go 模拟一个异步任务的发送，发送完毕之后再machinery_master界面能看到结果输出
+
+#### curl测试
+```bash
+登录
+curl -i -X POST \
+   -H "Content-Type:application/json" \
+   -H "sv:1" \
+   -H "sign:kWzyW23DOnMpGXz9Iqj2fWkaenYz0Qw7JiJrLqA5gZ2DnVGlhSWfoOvZqsa6opoc2m3DwJmfWhuwQRDQLTVY0QHCKR9JoycLljBH" \
+   -H "ts:23452" \
+   -d \
+'{
+  "id": 1,
+  "uid": 99475266
+}' \
+ 'http://127.0.0.1:8000/user/login'
+
+查看用户信息
+curl -i -X GET \
+   -H "sv:1" \
+   -H "sign:kWzyW23DOnMpGXz9Iqj2fWkaenYz0Qw7JiJrLqA5gZ2DnVGlhSWfoOvZqsa6opoc2m3DwJmfWhuwQRDQLTVY0QHCKR9JoycLljBH" \
+   -H "ts:23452" \
+   -H "Authorization:这里是登录返回的jwt，前面没有Bearer！！！！！！！！！！！" \
+   # 长这个样子，记住没有前面的
+   -H "Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjM0Mzc3OTYxMDY5MjYwMDAsInVpZCI6Ijk5NDc1MjY2In0.OtGO53UGVkSWGCQtbScsOKXFLhRMwhBoOlEZPG7qOG0" \
+ 'http://127.0.0.1:8000/v1/user?uid=99475266&uid=99475268&uid=99475267'
+ 
+退出
+curl -i -X GET \
+   -H "Authorization:这里是登录返回的jwt" \
+   -H "sign:kWzyW23DOnMpGXz9Iqj2fWkaenYz0Qw7JiJrLqA5gZ2DnVGlhSWfoOvZqsa6opoc2m3DwJmfWhuwQRDQLTVY0QHCKR9JoycLljBH" \
+   -H "sv:1" \
+   -H "ts:23452" \
+   -H "sign1:12" \
+ 'http://127.0.0.1:8000/v1/user/logout'
+
+```
+
 #### 目录结构
 ```
  - common     一些通用配置，返回正常信息、错误信息
@@ -12,15 +53,13 @@
  - schema     用来解析请求参数，代替model层
  - service    db初始化
  - util       其他工具函数
+ - tasks      异步任务
 ```
 
-
-##### 中间件认证
+##### 异步任务(machinery)
 ```go
-关键函数: Decorator
-用一个装饰器来顺序执行需要执行的验证逻辑
-v1R.GET("/user", middleware.Decorator(handler.UserInfo, middleware.VerifyUid))
-上面这个先执行函数:middleware.VerifyUid, 在执行:handler.UserInfo
+register_func 里面注册异步任务的map，每增加一个新的异步任务在里面写对应关系
+send_func 里面构造一个signature，在物业层面只调用这里面的方法即可，更加简洁
 ```
 
 ##### 参数解析
@@ -110,29 +149,12 @@ func (u *User) NKeys() int {
 ```
 ##### 以下为用到的mysql信息
 ```go
-
-database_name:yinyu_dev
-
-CREATE TABLE `family` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `family_name` varchar(128) DEFAULT NULL COMMENT '家庭名字',
-  `member_name` varchar(128) DEFAULT NULL COMMENT '成员名字',
-  `member_sex` varchar(128) DEFAULT NULL COMMENT '成员性别',
-  `member_age` varchar(128) DEFAULT NULL COMMENT '成员命令',
-  `member_city` varchar(128) DEFAULT NULL COMMENT '成员所在城市',
-  `invitation_code` varchar(128) DEFAULT NULL COMMENT '家庭邀请码',
-  `child_id` int(11) DEFAULT NULL COMMENT '孩子id',
-  `run_total` int(11) DEFAULT NULL COMMENT '家庭总计跑步里程',
-  `task_stage` int(11) DEFAULT NULL COMMENT '任务完成阶段',
-  `uid` varchar(256) DEFAULT NULL COMMENT '用户uid',
-  PRIMARY KEY (`id`),
-  KEY `ix_family_created_at` (`created_at`),
-  KEY `ix_family_family_name` (`family_name`),
-  KEY `ix_family_invitation_code` (`invitation_code`),
-  KEY `ix_family_updated_at` (`updated_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+mysql:
+  user: "root"
+  password: "root"
+  host: "127.0.0.1"
+  port: 3306
+  database: yinyu_gin
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -145,4 +167,8 @@ CREATE TABLE `user` (
   KEY `ix_user_uid` (`uid`),
   KEY `ix_user_updated_at` (`updated_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `yinyu_gin`.`user`(`id`, `created_at`, `updated_at`, `uid`, `family_id`) VALUES (1, 1560258391, 1560258639, '99475266', 2);
+INSERT INTO `yinyu_gin`.`user`(`id`, `created_at`, `updated_at`, `uid`, `family_id`) VALUES (2, 1560258391, 1560258639, '99475267', 2);
+INSERT INTO `yinyu_gin`.`user`(`id`, `created_at`, `updated_at`, `uid`, `family_id`) VALUES (3, 1560258391, 1560258639, '99475268', 2);
 ```

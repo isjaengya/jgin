@@ -2,11 +2,11 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"strconv"
-	"strings"
 	"jgin/api/common"
 	"jgin/api/lib"
 	"jgin/api/lib/e"
+	"strconv"
+	"strings"
 )
 
 func RequestUrlMiddleware() gin.HandlerFunc {
@@ -30,14 +30,14 @@ func RequestUrlMiddleware() gin.HandlerFunc {
 
 		if ts != "" && sign != "" && sv != "" {
 			sv, err := strconv.Atoi(sv)
-			if err != nil{
+			if err != nil {
 				common.SetError(c, e.WRONG_SIGN_VERSION, nil)
 				c.Abort()
 				return
 			}
-			if sv == 1{
+			if sv == 1 {
 				serverSign := lib.GenerateSignatureV1(ts)
-				if serverSign == sign{
+				if serverSign == sign {
 					c.Next()
 				} else {
 					common.SetError(c, e.INVALID_SIGNATURE, nil)

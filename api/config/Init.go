@@ -1,9 +1,9 @@
 package config
 
 import (
-	"fmt"
-	"os"
 	"github.com/spf13/viper"
+	"log"
+	"os"
 )
 
 var Conf *viper.Viper = nil
@@ -20,7 +20,7 @@ func LoadConfig() *viper.Viper {
 			v.SetConfigName("development")
 		}
 		if err := v.ReadInConfig(); err != nil {
-			fmt.Println(err)
+			log.Fatalf("配置初始化失败，%s", err.Error())
 			return nil
 		}
 		Conf = v

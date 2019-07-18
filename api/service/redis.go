@@ -5,10 +5,10 @@ package service
  */
 import (
 	"github.com/go-redis/redis"
+	ginConf "jgin/api/config"
 	"log"
 	"strconv"
 	"strings"
-	Config "jgin/api/config"
 	"time"
 )
 
@@ -18,7 +18,7 @@ var RedisPool map[string]*redis.Client
 
 func RedisInit() {
 	RedisPool = make(map[string]*redis.Client)
-	config := Config.Conf
+	config := ginConf.Conf
 	Map := config.GetStringMapString("redis.address")
 	for key, value := range Map {
 		confs := strings.Split(value, " ")
@@ -55,11 +55,7 @@ func RedisInit() {
 		}
 		RedisPool[key] = cli
 	}
-	cli, ok := RedisPool["default"]
-	if ok {
-		defaultRedis = cli
-	} else {
-	}
+	defaultRedis, _ = RedisPool["default"]
 }
 
 func GetRedisClient() *redis.Client {

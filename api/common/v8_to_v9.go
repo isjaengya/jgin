@@ -1,9 +1,9 @@
 package common
 
 import (
+	"jgin/api/schema"
 	"reflect"
 	"sync"
-	"jgin/api/schema"
 
 	"github.com/gin-gonic/gin/binding"
 	"gopkg.in/go-playground/validator.v9"

@@ -4,16 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	ginConf "jgin/api/config"
 	"log"
-	Config "jgin/api/config"
 )
 
 var mysqldb *sql.DB
 
-func MysqlInit(){
+func MysqlInit() {
 
- 	var err error
-	config := Config.Conf
+	var err error
+	config := ginConf.Conf
 	mysqlUser := config.GetString("mysql.user")
 	mysqlPassword := config.GetString("mysql.password")
 	mysqlHost := config.GetString("mysql.host")
@@ -24,19 +24,19 @@ func MysqlInit(){
 	mysqlMaxIdleConns := config.GetInt("mysql.maxidleconns")
 	// user:password@(host:port)/dbname
 	mysqlS := fmt.Sprintf("%s:%s@(%s:%s)/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDatabase)
-    //Mysqldb, err = sql.Open("mysql", "root:root@/yinyu_dev")
-    mysqldb, err = sql.Open("mysql", mysqlS)
+	//Mysqldb, err = sql.Open("mysql", "root:root@/yinyu_dev")
+	mysqldb, err = sql.Open("mysql", mysqlS)
 
-    if err != nil {
+	if err != nil {
 		log.Fatalf("Open database error: %s\n", err)
 	}
 
-    mysqldb.SetMaxOpenConns(mysqlMaxOpenConns)
-    mysqldb.SetMaxIdleConns(mysqlMaxIdleConns)
+	mysqldb.SetMaxOpenConns(mysqlMaxOpenConns)
+	mysqldb.SetMaxIdleConns(mysqlMaxIdleConns)
 
-    err = mysqldb.Ping()
-    if err != nil {
-		log.Fatal(err)
+	err = mysqldb.Ping()
+	if err != nil {
+		log.Fatal("mysql 初始化失败，%s", err.Error())
 	}
 
 }

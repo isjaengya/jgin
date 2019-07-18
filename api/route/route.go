@@ -8,19 +8,20 @@ import (
 
 func InitRoute() *gin.Engine {
 	r := gin.Default()
+	r.Use(middleware.RequestUrlMiddleware())
+	// 不需要登录就可以访问的接口
+	commonR := r.Group("")
+	commonR.POST("/ping", handler.TestPost)
+	commonR.POST("/user/login", handler.UserLogin)
+
+	// 需要登录才可以访问的接口
 	v1R := r.Group("/v1")
-
-	v1R.Use(middleware.RequestUrlMiddleware())
-	v1R.POST("/ping", handler.TestPost)
-	v1R.POST("/family", handler.FamilyPost)
-
-	v1R.POST("/user/login", handler.UserLogin)
-	v1R.GET("/user/logout", middleware.Decorator(handler.UserLogout, middleware.VerifyUid))
-	//v1R.GET("/user", handler.UserInfo)
-	v1R.GET("/user", middleware.Decorator(handler.UserInfo, middleware.VerifyUid))
-	v1R.GET("/inner/user", handler.UserInfo)
-
+	v1R.Use(middleware.VerifyUidMiddleware())
+	v1R.GET("/user/logout", handler.UserLogout)
+	v1R.GET("/user", handler.UserInfo)
 	v1R.GET("/user/jwt", handler.CheckUserJwt)
+	v1R.GET("/inner/user", handler.UserInfo)
+	//v1R.GET("/user", handler.UserInfo)
 
 	return r
 }

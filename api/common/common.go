@@ -5,20 +5,20 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
-	"net/http"
 	"jgin/api/lib/e"
+	"net/http"
 	"time"
 )
 
-func SetError(c *gin.Context, code int, err error) {
+func SetError(c *gin.Context, msg e.Errmsg, err error) {
 	err = GetValidatorError(err)
 	obj := gin.H{}
-	if err == nil{
-		obj["message"] = e.GetMessage(code)
+	if err == nil {
+		obj["message"] = msg[1]
 	} else {
 		obj["message"] = err.Error()
 	}
-	obj["errcode"] = code
+	obj["errcode"] = msg[0]
 	obj["timestamp"] = time.Now().Format("2006-01-02 15:04:05")
 	c.JSON(http.StatusOK, obj)
 	return
@@ -37,7 +37,7 @@ type ValidateError struct {
 }
 
 func GetValidatorError(err error) error {
-	if err == nil{
+	if err == nil {
 		return nil
 	}
 	errs := err.(validator.ValidationErrors)

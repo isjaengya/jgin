@@ -12,6 +12,22 @@ mysql:
   password: "root"
   host: "127.0.0.1"
   port: 3306
-  database: yinyu_dev
+  database: yinyu_gin
   maxopenconns: 200
   maxidleconns: 100
+
+#  任务队列配置
+machinery:
+  broker: "redis://127.0.0.1:6379/2"
+  default_queue: "machinery_tasks"
+  result_backend: "redis://127.0.0.1:6379/3"  # 结果存储位置，不要去掉，去掉的话send没法发送任务，因为每一次任务都会把结果存储起来，很浪费空间
+  results_expire_in: 600  #  结果存储ttl，默认是秒，因为每一次任务都会把结果存储起来，很浪费空间
+
+#  下面这些配置无用
+#amqp:
+#  binding_key: machinery_tasks
+#  exchange: machinery_exchange
+#  exchange_type: direct
+#  prefetch_count: 1  # 启动几个work来执行任务
+##  queue_binding_args: ["test_1", "test_2", "test_3"]
+#  queue_binding_args: {"test_1": "111111", "test_2": "22222222222"}
