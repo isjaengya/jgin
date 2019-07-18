@@ -3,7 +3,7 @@
 #### 启动测试
 go run main.go 启动gin框架
 go run machinery_master.go 启动machinery任务队列
-go run machinery_sender.go 模拟一个异步任务的发送，发送完毕之后再machinery_master界面能看到结果输出
+go run machinery_sender.go 模拟一个异步任务的发送，发送完毕之后在machinery_master界面能看到结果输出
 
 #### curl测试
 ```bash
