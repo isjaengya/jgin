@@ -59,7 +59,7 @@ curl -i -X GET \
 ##### 异步任务(machinery)
 ```go
 register_func 里面注册异步任务的map，每增加一个新的异步任务在里面写对应关系
-send_func 里面构造一个signature，在物业层面只调用这里面的方法即可，更加简洁
+send_func 里面构造一个signature，在业务层面只调用这里面的方法即可，更加简洁
 ```
 
 ##### 参数解析
