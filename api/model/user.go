@@ -7,6 +7,7 @@ import (
 	"jgin/api/lib"
 	"jgin/api/schema"
 	"jgin/api/service"
+	"jgin/api/util"
 	"log"
 	"time"
 )
@@ -73,7 +74,6 @@ func GetCacheInfoToUser(uid string) (u *User, err error) {
 		}
 
 	}
-	fmt.Println("s", s)
 	err = gojay.UnmarshalJSONObject([]byte(s), user)
 	//err = json.Unmarshal([]byte(s), user)
 	if err != nil {
@@ -137,11 +137,44 @@ func FindUserByUid(uid string) (u *User, err error) {
 	user := &User{}
 	mysqlClient := service.GetMysqlClient()
 
-	err = mysqlClient.QueryRow("select * from user where uid = ?", uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId)
+	err = mysqlClient.QueryRow("select id, COALESCE(created_at, 0), COALESCE(updated_at, 0), uid, family_id from user where uid = ?", uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId)
 	if err != nil {
 		fmt.Println(err.Error(), "没有查询到user")
 		return user, err
 	}
 	fmt.Println("查询到user", user)
 	return user, err
+}
+
+func (u User) GetUserTodayLoginF() (b bool) {
+	// 今天登录奖励是否领取
+	redisClient := service.GetRedisClient()
+	// key: user_task_status_2019_7_19_uid
+	key := util.GetUserTaskKey(u.Uid)
+	result, err := redisClient.Get(key).Int()
+	if err != nil {
+		// key不存在，说明用户今天第一次登录，incr这个key同时增加用户连续登录天数
+		_, _ = redisClient.Incr(key).Result()
+		userLoginDaysKey := util.GetUserLoginDaysKey(u.Uid)
+		_, _ = redisClient.Incr(userLoginDaysKey).Result()
+		return true
+	}
+	if result <= 1 {
+		// 未领取
+		return true
+	} else {
+		return false
+	}
+}
+
+func (u User) GetUserLoginDays() (i int) {
+	redisClient := service.GetRedisClient()
+	key := util.GetUserLoginDaysKey(u.Uid)
+	loginDays, err := redisClient.Get(key).Int()
+	if err != nil {
+		fmt.Println(err.Error())
+		return 1
+	}
+	return loginDays
+
 }

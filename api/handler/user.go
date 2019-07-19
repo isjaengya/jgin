@@ -32,9 +32,9 @@ func UserLogin(c *gin.Context) {
 }
 
 func UserLogout(c *gin.Context) {
-	uid := middleware.GetUid(c)
-	go model.DeleteUserJwtLast10(uid)
-	c.Header("Authorization", "")
+	//user := middleware.GetUser(c)
+	//go model.DeleteUserJwtLast10(user.Uid)
+	//c.Header("Authorization", "")
 	common.SetOK(c, "ok")
 	return
 }
@@ -57,8 +57,8 @@ func UserInfo(c *gin.Context) {
 }
 
 func CheckUserJwt(c *gin.Context) {
-	uid := middleware.GetUid(c)
-	m := map[string]interface{}{"uid": uid}
-	common.SetOK(c, m)
+	//user := middleware.GetUser(c)
+	//m := map[string]interface{}{"uid": user.Uid}
+	//common.SetOK(c, m)
 	return
 }

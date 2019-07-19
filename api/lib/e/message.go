@@ -12,6 +12,7 @@ var (
 	JWT_PARSE_ERROE            = Errmsg{10008, "JWT字符串解析失败"}
 	JWT_INVALID                = Errmsg{10012, "JWT已失效"}
 	PASSWORD_OR_USERNAME_ERROR = Errmsg{10011, "账号或密码不正确"}
+	MIDDLEWARE_GET_USER_ERROR  = Errmsg{10012, "middleware获取用户信息失败"}
 )
 
 var validateMsg = map[string]string{

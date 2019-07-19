@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"jgin/api/common"
 	"jgin/api/lib/e"
+	"jgin/api/model"
 	"jgin/api/util"
 )
 
@@ -19,7 +21,13 @@ func VerifyUidMiddleware() gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-			c.Set("CurrentUid", uid)
+			// 获取用户信息，set一个User类到gin中，在后面结构想要获取当前用户调用：user := middleware.GetUser(c)
+			user, err := model.GetCacheInfoToUser(uid)
+			if err != nil {
+				fmt.Println("middleware get user error: %s", err.Error())
+				common.SetError(c, e.MIDDLEWARE_GET_USER_ERROR, err)
+			}
+			c.Set("CurrentUser", user)
 			return
 		} else {
 			common.SetError(c, e.JWT_PARSE_ERROE, nil)

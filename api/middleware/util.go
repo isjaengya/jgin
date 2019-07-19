@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"jgin/api/model"
 	"jgin/api/util"
 )
 
@@ -16,8 +17,11 @@ func Decorator(h gin.HandlerFunc, decors ...GinHandlerDecorator) gin.HandlerFunc
 	return h
 }
 
-func GetUid(c *gin.Context) (uid string) {
-	uid = c.GetString("CurrentUid")
+func GetUser(c *gin.Context) (user *model.User) {
+	if u, exists := c.Get("CurrentUser"); exists {
+		user, _ = u.(*model.User)
+	}
+
 	return
 }
 

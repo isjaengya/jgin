@@ -20,6 +20,7 @@ func InitRoute() *gin.Engine {
 	v1R.GET("/user/logout", handler.UserLogout)
 	v1R.GET("/user", handler.UserInfo)
 	v1R.GET("/user/jwt", handler.CheckUserJwt)
+	v1R.GET("/user/login/days", handler.GetUserLoginDays)
 	v1R.GET("/inner/user", handler.UserInfo)
 	//v1R.GET("/user", handler.UserInfo)
 

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"jgin/api/lib"
 	"math/rand"
 	"strings"
 	"time"
@@ -26,4 +27,19 @@ func CountVerify(i int32) (b bool) {
 
 func SplitUid(uidS string) (uid []string) {
 	return strings.Split(uidS, ",")[:10]
+}
+
+func GetTodayStr() (s string) {
+	//timeStr := time.Now().Format("2006-01-02")
+	return "2019-07-20"
+}
+
+func GetUserTaskKey(uid string) (s string) {
+	// key: user_task_status_2019_7_19_uid
+	prefix := GetTodayStr()
+	return lib.UserTaskStatus + prefix + "_" + uid
+}
+
+func GetUserLoginDaysKey(uid string) (s string) {
+	return lib.UserLoginDays + uid
 }
