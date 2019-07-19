@@ -48,9 +48,9 @@ curl -i -X GET \
  - handler    逻辑处理
  - lib        常量、状态码、middleware基础函数
  - middlewre  权限验证中间件
- - model      用来存放表结构信息,暂时无用
+ - model      model
  - route      路由
- - schema     用来解析请求参数，代替model层
+ - schema     用来解析请求参数
  - service    db初始化
  - util       其他工具函数
  - tasks      异步任务
