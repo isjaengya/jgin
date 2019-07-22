@@ -30,8 +30,8 @@ func SplitUid(uidS string) (uid []string) {
 }
 
 func GetTodayStr() (s string) {
-	//timeStr := time.Now().Format("2006-01-02")
-	return "2019-07-20"
+	timeStr := time.Now().Format("2006-01-02")
+	return timeStr
 }
 
 func GetUserTaskKey(uid string) (s string) {

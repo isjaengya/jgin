@@ -40,11 +40,17 @@ func GetValidatorError(err error) error {
 	if err == nil {
 		return nil
 	}
-	errs := err.(validator.ValidationErrors)
+	errs, ok := err.(validator.ValidationErrors)
+	if !ok {
+		return err
+	}
 
 	for _, _e := range errs {
 		tag := _e.Tag()
 		errMsg := e.GetValidateMessage(tag)
+		if errMsg == "" {
+			continue
+		}
 		valueStruct := _e.StructField()
 
 		//inputValue := _e.Value() 这里获取的类型不确定，所以没办法直接返回
@@ -62,5 +68,5 @@ func GetValidatorError(err error) error {
 		//fmt.Println(_e.Param())
 		return errors.New(s)
 	}
-	return err
+	return nil
 }

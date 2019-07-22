@@ -6,7 +6,7 @@ import (
 	"runtime"
 )
 
-func RunApp() {
+func runApp() {
 	jginService.InitService()
 
 	route := jginroute.InitRoute()
@@ -18,5 +18,5 @@ func RunApp() {
 }
 
 func main() {
-	RunApp()
+	runApp()
 }

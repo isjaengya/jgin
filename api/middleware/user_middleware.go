@@ -26,6 +26,8 @@ func VerifyUidMiddleware() gin.HandlerFunc {
 			if err != nil {
 				fmt.Println("middleware get user error: %s", err.Error())
 				common.SetError(c, e.MIDDLEWARE_GET_USER_ERROR, err)
+				c.Abort()
+				return
 			}
 			c.Set("CurrentUser", user)
 			return

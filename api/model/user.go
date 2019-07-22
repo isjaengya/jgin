@@ -176,5 +176,21 @@ func (u User) GetUserLoginDays() (i int) {
 		return 1
 	}
 	return loginDays
+}
+
+func (u User) VerifyUserReceiveAward() (b bool) {
+	redisClient := service.GetRedisClient()
+	key := util.GetUserTaskKey(u.Uid)
+	result, err := redisClient.Get(key).Int()
+	if err != nil {
+		// 说明用户今天还未登录
+		return false
+	} else {
+		if result == 1 {
+			// 可以领取
+			return true
+		}
+		return false
+	}
 
 }
