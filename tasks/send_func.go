@@ -20,7 +20,7 @@ func AsyncHelloWorld(i int32) {
 			},
 		},
 	}
-	asyncResult, err := ginService.GetMachinerty().SendTask(signature)
+	asyncResult, err := ginService.GetMachinery().SendTask(signature)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
@@ -32,7 +32,7 @@ func AsyncGetUserFirst() {
 	signature := &tasks.Signature{
 		Name: "get_first_user",
 	}
-	asyncResult, err := ginService.GetMachinerty().SendTask(signature)
+	asyncResult, err := ginService.GetMachinery().SendTask(signature)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {

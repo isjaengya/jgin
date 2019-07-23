@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"jgin/api/common"
 	"jgin/api/lib"
@@ -39,6 +40,7 @@ func RequestUrlMiddleware() gin.HandlerFunc {
 				serverSign := lib.GenerateSignatureV1(ts)
 				if serverSign == sign {
 					c.Next()
+					fmt.Println("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
 				} else {
 					common.SetError(c, e.INVALID_SIGNATURE, nil)
 					c.Abort()

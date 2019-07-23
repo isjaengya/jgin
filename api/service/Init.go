@@ -12,6 +12,9 @@ func InitService() {
 	fmt.Println("redis 初始化成功")
 	MysqlInit()
 	fmt.Println("mysql 初始化成功")
+	MongoInit()
+	fmt.Println("mongodb 初始化成功")
 	MachineryInit()
 	fmt.Println("machinery 初始化成功")
+
 }

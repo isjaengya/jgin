@@ -42,8 +42,8 @@ func UserReceiveAward(c *gin.Context) {
 		先判断用户今天有没有登录以及是否领取(redis key >= 2)，如果有的话发放给用户奖励，同时更新表中信息
 	*/
 	user := middleware.GetUser(c)
-	b := user.VerifyUserReceiveAward()
-	if !b {
+	ok := user.VerifyUserReceiveAward()
+	if !ok {
 		common.SetError(c, e.USER_NOT_LOGIN_TODAY, nil)
 		return
 	}

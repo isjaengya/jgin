@@ -39,9 +39,9 @@ func RedisInit() {
 			db, _ = strconv.Atoi(array[1])
 		}
 		cli := redis.NewClient(&redis.Options{
-			Addr:         host,
-			DB:           db,
-			IdleTimeout:  -1,
+			Addr: host,
+			DB:   db,
+			//IdleTimeout:  -1,
 			Password:     password,
 			PoolSize:     config.GetInt("redis.poolsize"),
 			MinIdleConns: config.GetInt("redis.minIdleConns"),

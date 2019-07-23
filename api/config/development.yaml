@@ -16,6 +16,14 @@ mysql:
   maxopenconns: 200
   maxidleconns: 100
 
+mongo:
+  user: ""
+  password: ""
+  host: "127.0.0.1"
+  port: 27017
+  defaultDatabase: "test"
+  maxOpenConns: 200
+
 #  任务队列配置
 machinery:
   broker: "redis://127.0.0.1:6379/2"

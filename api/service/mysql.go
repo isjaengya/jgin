@@ -22,11 +22,9 @@ func MysqlInit() {
 
 	mysqlMaxOpenConns := config.GetInt("mysql.maxopenconns")
 	mysqlMaxIdleConns := config.GetInt("mysql.maxidleconns")
-	// user:password@(host:port)/dbname
 
-	//mysqlS := fmt.Sprintf("%s:%s@(%s:%s)/%s?loc=%s&parseTime=true", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDatabase, url.QueryEscape("Asia/shanghai"))
+	// user:password@(host:port)/dbname
 	mysqlS := fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDatabase)
-	//Mysqldb, err = sql.Open("mysql", "root:root@/yinyu_dev")
 	mysqldb, err = sql.Open("mysql", mysqlS)
 
 	if err != nil {
@@ -38,7 +36,7 @@ func MysqlInit() {
 
 	err = mysqldb.Ping()
 	if err != nil {
-		log.Fatal("mysql 初始化失败，%s", err.Error())
+		log.Fatal("mysql 初始化失败，", err.Error())
 	}
 
 }
