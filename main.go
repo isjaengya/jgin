@@ -11,9 +11,10 @@ func runApp() {
 
 	route := jginroute.InitRoute()
 
-	//ginpprof.Wrap(route)
+	//ginpprof.Wrap(route)  //火焰图
 
-	runtime.GOMAXPROCS(1)
+	runtime.GOMAXPROCS(1) // goland 调试协程必须指定cpu使用核数为1
+
 	_ = route.Run(":8000")
 }
 
