@@ -64,7 +64,7 @@ func GetCacheInfoToUser(uid string) (u *User, err error) {
 		// 没有在redis中查询到数据, 扫db, 重新缓存
 		ok := user.FindUserByUid()
 		if ok {
-			//go user.UpdateRedisCache()
+			go user.UpdateRedisCache()
 			return user, nil
 		} else {
 			s = "没有查询到该用户, " + uid
