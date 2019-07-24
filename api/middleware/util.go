@@ -19,6 +19,5 @@ func GetUser(c *gin.Context) (user *model.User) {
 	if u, exists := c.Get("CurrentUser"); exists {
 		user, _ = u.(*model.User)
 	}
-
 	return
 }
