@@ -175,6 +175,10 @@ func (u *User) DelLock() {
 		return
 	}
 	userLockValue := u.GetLockValue()
+	if userLockValue == 0 {
+		// 锁过期
+		return
+	}
 	t := u.SelectTime
 	if t >= userLockValue {
 		i, err := redisClient.Del(key).Result()
