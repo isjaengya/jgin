@@ -130,11 +130,15 @@ func (u *User) UpdateRedisCache() {
 				continue
 			}
 			userLockValue := u.GetLockValue()
-			t := u.SelectTime
-			if t <= userLockValue {
-				fmt.Println("mysql time < user lock time, pass, lock time and current time is : ", userLockValue, t)
-				break
+			if userLockValue != 0 {
+				// 值为0说明锁已经过期
+				t := u.SelectTime
+				if t <= userLockValue {
+					fmt.Println("mysql time < user lock time, pass, lock time and current time is : ", userLockValue, t)
+					break
+				}
 			}
+
 		}
 		time.Sleep(1)
 		i++
@@ -161,6 +165,7 @@ func (u *User) GetLockValue() (i int64) {
 	result, err := redisClient.Get(key).Int64()
 	if err != nil {
 		fmt.Println("get user lock error, ", err.Error())
+		return 0
 	}
 	return result
 }
