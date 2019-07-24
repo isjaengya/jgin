@@ -56,23 +56,20 @@ type UnmarshalerJSONObject interface {
 }
 
 func GetCacheInfoToUser(uid string) (u *User, err error) {
-	user := &User{}
+	user := &User{Uid: uid}
 	redisClient := service.GetRedisClient()
 	key := lib.UserRedisKey + uid
 	s, err := redisClient.Get(key).Result()
 	if err != nil {
 		// 没有在redis中查询到数据, 扫db, 重新缓存
-		user, err = FindUserByUid(uid)
-		if err == nil {
-			// 查询到
-			go user.UpdateRedisCache()
-			return user, err
+		ok := user.FindUserByUid()
+		if ok {
+			//go user.UpdateRedisCache()
+			return user, nil
 		} else {
-			// 没查到
 			s = "没有查询到该用户, " + uid
 			return user, errors.New(s)
 		}
-
 	}
 	err = gojay.UnmarshalJSONObject([]byte(s), user)
 	//err = json.Unmarshal([]byte(s), user)
@@ -208,17 +205,16 @@ func VerifyUserLogin(u schema.UserLoginSchema) (user User, b bool) {
 	return user, true
 }
 
-func FindUserByUid(uid string) (u *User, err error) {
-	user := &User{}
+func (u *User) FindUserByUid() (b bool) {
 	mysqlClient := service.GetMysqlClient()
 
-	err = mysqlClient.QueryRow("select id, COALESCE(created_at, 0), COALESCE(updated_at, 0), uid, family_id, unix_timestamp(now()) from user where uid = ?", uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId, &user.SelectTime)
+	err := mysqlClient.QueryRow("select id, COALESCE(created_at, 0), COALESCE(updated_at, 0), uid, family_id, unix_timestamp(now())  from user where uid = ?", u.Uid).Scan(&u.Id, &u.CreateAt, &u.UpdateAt, &u.Uid, &u.FamilyId, &u.SelectTime)
 	if err != nil {
 		fmt.Println(err.Error(), "没有查询到user")
-		return user, err
+		return false
 	}
-	fmt.Println("查询到user", user)
-	return user, err
+	fmt.Println("查询到user", u)
+	return true
 }
 
 func (u User) GetUserTodayLoginF() (b bool) {
