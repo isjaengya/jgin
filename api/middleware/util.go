@@ -1,10 +1,8 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"jgin/api/model"
-	"jgin/api/util"
 )
 
 type GinHandlerDecorator func(gin.HandlerFunc) gin.HandlerFunc
@@ -23,12 +21,4 @@ func GetUser(c *gin.Context) (user *model.User) {
 	}
 
 	return
-}
-
-func GinGetJwt(c *gin.Context, uid string) (s string) {
-	m := map[string]interface{}{"uid": uid}
-	jwt := util.CreateJwt(m)
-	c.Header("Authorization", jwt)
-	fmt.Println("jwt: --> ", jwt)
-	return jwt[len(jwt)-10:]
 }

@@ -88,9 +88,9 @@ func (u *User) SetUserJwtLast10(jwt string) {
 	}
 }
 
-func DeleteUserJwtLast10(uid string) {
+func (u *User) DeleteUserJwtLast10() {
 	redisClient := service.GetRedisClient()
-	key := lib.UserJwtRedisKey + uid
+	key := lib.UserJwtRedisKey + u.Uid
 	if err := redisClient.Del(key).Err(); err != nil {
 		fmt.Println("delte user jwt last 10 err, ", err.Error())
 	}

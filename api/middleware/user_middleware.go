@@ -6,16 +6,15 @@ import (
 	"jgin/api/common"
 	"jgin/api/lib/e"
 	"jgin/api/model"
-	"jgin/api/util"
 )
 
 func VerifyUidMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		jwt := c.GetHeader("Authorization")
 
-		uid, ok := util.ParseTokenUid(jwt)
+		uid, ok := ParseTokenUid(jwt)
 		if ok {
-			s := util.GetUserJwtLast10(uid)
+			s := GetUserJwtLast10(uid)
 			if jwt[len(jwt)-10:] != s {
 				common.SetError(c, e.JWT_INVALID, nil)
 				c.Abort()

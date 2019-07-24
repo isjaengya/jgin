@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"jgin/api/util"
+	"jgin/api/middleware"
 )
 
 func main() {
@@ -13,8 +13,8 @@ func main() {
 
 	userInfo["uid"] = "111111"
 
-	tokenString1 := util.CreateJwt(userInfo)
-	uid, ok := util.ParseTokenUid(tokenString1)
+	tokenString1 := middleware.CreateJwt(userInfo)
+	uid, ok := middleware.ParseTokenUid(tokenString1)
 	if ok {
 		fmt.Println(uid, "222222222222")
 	}

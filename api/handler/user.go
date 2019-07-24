@@ -7,7 +7,6 @@ import (
 	"jgin/api/middleware"
 	"jgin/api/model"
 	"jgin/api/schema"
-	"jgin/tasks"
 )
 
 func UserLogin(c *gin.Context) {
@@ -25,7 +24,7 @@ func UserLogin(c *gin.Context) {
 	jwtLast10 := middleware.GinGetJwt(c, user.Uid)
 
 	go user.SetUserJwtLast10(jwtLast10)
-	go tasks.AsyncHelloWorld(user.CreateAt)
+	//go tasks.AsyncHelloWorld(user.CreateAt)
 
 	common.SetOK(c, user)
 	return
@@ -33,7 +32,7 @@ func UserLogin(c *gin.Context) {
 
 func UserLogout(c *gin.Context) {
 	user := middleware.GetUser(c)
-	go model.DeleteUserJwtLast10(user.Uid)
+	go user.DeleteUserJwtLast10()
 	c.Header("Authorization", "")
 	common.SetOK(c, "ok")
 	return
