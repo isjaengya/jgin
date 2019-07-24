@@ -43,3 +43,7 @@ func GetUserTaskKey(uid string) (s string) {
 func GetUserLoginDaysKey(uid string) (s string) {
 	return lib.UserLoginDays + uid
 }
+
+func GetTimeUnix() (i int64) {
+	return time.Now().Unix()
+}

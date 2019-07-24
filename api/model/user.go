@@ -13,11 +13,12 @@ import (
 )
 
 type User struct {
-	Id       int    `json:"id" from:"id"`
-	CreateAt int32  `json:"create_at" from:"create_at"`
-	UpdateAt int32  `json:"update_at" from:"update_at"`
-	Uid      string `json:"uid" from:"uid"`
-	FamilyId int    `json:"family_id" form:"family_id"`
+	Id         int    `json:"id" from:"id"`
+	CreateAt   int32  `json:"create_at" from:"create_at"`
+	UpdateAt   int32  `json:"update_at" from:"update_at"`
+	Uid        string `json:"uid" from:"uid"`
+	FamilyId   int    `json:"family_id" form:"family_id"`
+	SelectTime int64
 }
 
 func (u *User) MarshalJSONObject(enc *gojay.Encoder) {
@@ -61,7 +62,6 @@ func GetCacheInfoToUser(uid string) (u *User, err error) {
 	s, err := redisClient.Get(key).Result()
 	if err != nil {
 		// 没有在redis中查询到数据, 扫db, 重新缓存
-		fmt.Println(err.Error(), "not find data")
 		user, err = FindUserByUid(uid)
 		if err == nil {
 			// 查询到
@@ -69,7 +69,7 @@ func GetCacheInfoToUser(uid string) (u *User, err error) {
 			return user, err
 		} else {
 			// 没查到
-			s := "没有查询到该用户, " + uid
+			s = "没有查询到该用户, " + uid
 			return user, errors.New(s)
 		}
 
@@ -100,7 +100,7 @@ func DeleteUserJwtLast10(uid string) {
 
 }
 
-func (u *User) UpdateRedisCache() {
+func (u *User) RedisCache() {
 	json := u.ToJson()
 	redisClient := service.GetRedisClient()
 
@@ -109,6 +109,81 @@ func (u *User) UpdateRedisCache() {
 	if err != nil {
 		fmt.Println("set user info error, ", err.Error())
 	}
+}
+
+func (u *User) UpdateRedisCache() {
+	// 真正的锁逻辑
+	i := 0
+	for {
+		if i >= lib.UserLockRetry {
+			fmt.Println("超出重试上限，", i)
+			break
+		}
+		lock := u.GetLock()
+		fmt.Println(lock, "lock status")
+		if lock {
+			// 拿到锁
+			u.RedisCache()
+			// 删除锁
+			u.DelLock()
+			break
+		} else {
+			// 判断当前时间是否比锁时间大，如果小于等于锁时间不执行缓存, 更新用户信息时SelectTime为0，此时不管之前lock里面的值为多少
+			if u.SelectTime == 0 {
+				continue
+			}
+			userLockValue := u.GetLockValue()
+			t := u.SelectTime
+			if t <= userLockValue {
+				fmt.Println("mysql time < user lock time, pass, lock time and current time is : ", userLockValue, t)
+				break
+			}
+		}
+		time.Sleep(1)
+		i++
+	}
+}
+
+func (u *User) GetLock() (b bool) {
+	redisClient := service.GetRedisClient()
+	key := lib.UserLockKye + u.Uid
+
+	result, err := redisClient.SetNX(key, u.SelectTime, lib.UserLockExpire).Result()
+	if err != nil {
+		fmt.Println(err.Error(), "setnx error")
+		return false
+	}
+	fmt.Println(result, "setnx status")
+	return result
+}
+
+func (u *User) GetLockValue() (i int64) {
+	redisClient := service.GetRedisClient()
+	key := lib.UserLockKye + u.Uid
+
+	result, err := redisClient.Get(key).Int64()
+	if err != nil {
+		fmt.Println("get user lock error, ", err.Error())
+	}
+	return result
+}
+
+func (u *User) DelLock() {
+	redisClient := service.GetRedisClient()
+	key := lib.UserLockKye + u.Uid
+
+	if u.SelectTime == 0 {
+		i, err := redisClient.Del(key).Result()
+		fmt.Println(i, err, "删除 user lock, SelectTime = 0")
+		return
+	}
+	userLockValue := u.GetLockValue()
+	t := u.SelectTime
+	if t >= userLockValue {
+		i, err := redisClient.Del(key).Result()
+		fmt.Println(i, err, "删除 user lock")
+	}
+
 }
 
 func (u *User) ToJson() (s string) {
@@ -137,7 +212,7 @@ func FindUserByUid(uid string) (u *User, err error) {
 	user := &User{}
 	mysqlClient := service.GetMysqlClient()
 
-	err = mysqlClient.QueryRow("select id, COALESCE(created_at, 0), COALESCE(updated_at, 0), uid, family_id from user where uid = ?", uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId)
+	err = mysqlClient.QueryRow("select id, COALESCE(created_at, 0), COALESCE(updated_at, 0), uid, family_id, unix_timestamp(now()) from user where uid = ?", uid).Scan(&user.Id, &user.CreateAt, &user.UpdateAt, &user.Uid, &user.FamilyId, &user.SelectTime)
 	if err != nil {
 		fmt.Println(err.Error(), "没有查询到user")
 		return user, err
